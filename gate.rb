@@ -2,37 +2,68 @@ require "formula"
 
 class Gate < Formula
   homepage "http://www.opengatecollaboration.org"
-  url "http://www.opengatecollaboration.org/sites/opengatecollaboration.org/files/gate_v7.0.tar.gz"
-  version '7.0'
-  sha1 "c2933786d8e9cee97011c3ebe198fc6e1fb5fe1d"
-
-  option 'with-benchmarks', 'Download Benchmarks Data'
-  option 'with-examples', 'Download Examples Data'
-  option 'with-ecat7', 'ECAT7 Support'
-  option 'with-lmf', 'LMF Support'
-  option 'with-gpu', 'CUDA Support'
-  option 'with-optical', 'Optical Support'
-  option 'with-clhep', 'Use System CLHEP Library'
+  url "http://git.opengatecollaboration.org/git/opengate-public.git", :using => :git, :tag => "master"
+  version "7.0"
 
   depends_on 'cmake' => :build
-  depends_on 'clhep' if build.with? 'clhep'
+
+  needs :cxx11
+
+  patch :DATA
 
   def install
+    ENV['CXXFLAGS'] = "-std=c++11"
+    # gcc = Formula["gcc"]
     mkdir 'gate-build' do
-      args = %W[
-               ../
-               ]
-
-      args << '-DGATE_DOWNLOAD_BENCHMARKS_DATA=ON' if build.with? 'benchmarks'
-      args << '-DGATE_DOWNLOAD_EXAMPLES_DATA=ON' if build.with? 'examples'
-      arcs << '-DGATE_USE_ECAT7=ON' if build.with? 'ecat7'
-      args << '-DGATE_USE_GPU=ON' if build.with? 'gpu'
-      args << '-DGATE_USE_LMF=ON' if build.with? 'lmf'
-      args << '-DGATE_USE_OPTICAL=ON' if build.with? 'optical'
-      args << '-DGATE_USE_SYSTEM_CLHEP=ON' if build.with? 'clhep'
-      args.concat(std_cmake_args)
-      system "cmake", *args
-      system "make install"
+      # system "tar", "xvf", "../gate_v7.0.tar_"
+      system "cmake", "..",
+        # "-DCMAKE_C_COMPILER=#{gcc.bin}/gcc-#{gcc.version_suffix}",
+        # "-DCMAKE_CXX_COMPILER=#{gcc.bin}/g++-#{gcc.version_suffix}",
+        *std_cmake_args
+      system "make", "install"
     end
   end
 end
+
+__END__
+diff --git a/source/arf/src/GateARFTableMgr.cc b/source/arf/src/GateARFTableMgr.cc
+index 49161ee..46f5e5f 100644
+--- a/source/arf/src/GateARFTableMgr.cc
++++ b/source/arf/src/GateARFTableMgr.cc
+@@ -222,7 +222,7 @@ G4cout << " --------------------------------------------------------------------
+ void GateARFTableMgr::SaveARFToBinaryFile()
+ {
+ 
+-ofstream dest;
++std::ofstream dest;
+ dest.open ( theFN.c_str() );
+ 
+ std::map<G4int,GateARFTable*>::iterator aIt;
+@@ -298,7 +298,7 @@ void GateARFTableMgr::LoadARFFromBinaryFile(G4String theFileName)
+ 
+   G4String basename = GetName()+"ARFTable_";
+ 
+-  ifstream dest;
++  std::ifstream dest;
+   dest.open ( theFileName.c_str(),std::ios::binary );
+ 
+     dest.seekg(0, std::ios::beg);
+diff --git a/source/digits_hits/include/GateDiffCrossSectionActor.hh b/source/digits_hits/include/GateDiffCrossSectionActor.hh
+index 07ce504..2f39e53 100644
+--- a/source/digits_hits/include/GateDiffCrossSectionActor.hh
++++ b/source/digits_hits/include/GateDiffCrossSectionActor.hh
+@@ -64,10 +64,10 @@ class GateDiffCrossSectionActor : public GateVActor
+   void SetMaterial(G4String name);
+   void ReadMaterialList(G4String filename);
+ 
+-  ofstream PointerToFileDataOutSF;
+-  ofstream PointerToFileDataOutFF;
+-  ofstream PointerToFileDataOutDCScompton;
+-  ofstream PointerToFileDataOutDCSrayleigh;
++  std::ofstream PointerToFileDataOutSF;
++  std::ofstream PointerToFileDataOutFF;
++  std::ofstream PointerToFileDataOutDCScompton;
++  std::ofstream PointerToFileDataOutDCSrayleigh;
+   std::stringstream DriverDataOutSF;
+   std::stringstream DriverDataOutFF;
+   std::stringstream DriverDataOutDCScompton;
