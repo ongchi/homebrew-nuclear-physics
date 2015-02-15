@@ -2,23 +2,19 @@ require "formula"
 
 class Gate < Formula
   homepage "http://www.opengatecollaboration.org"
-  url "http://git.opengatecollaboration.org/git/opengate-public.git", :using => :git, :tag => "master"
-  version "7.0"
+  url "http://www.opengatecollaboration.org/sites/opengatecollaboration.org/files/gate_v7.0.tar_.gz"
+  sha1 "c2933786d8e9cee97011c3ebe198fc6e1fb5fe1d"
 
   depends_on 'cmake' => :build
+  depends_on 'geant4'
+  depends_on 'root'
 
   needs :cxx11
-
   patch :DATA
 
   def install
-    ENV['CXXFLAGS'] = "-std=c++11"
-    # gcc = Formula["gcc"]
     mkdir 'gate-build' do
-      # system "tar", "xvf", "../gate_v7.0.tar_"
       system "cmake", "..",
-        # "-DCMAKE_C_COMPILER=#{gcc.bin}/gcc-#{gcc.version_suffix}",
-        # "-DCMAKE_CXX_COMPILER=#{gcc.bin}/g++-#{gcc.version_suffix}",
         *std_cmake_args
       system "make", "install"
     end
@@ -84,11 +80,11 @@ index 3301c02..dd413ed 100644
       std::vector<G4KineticTrack *>::iterator titer;
       for ( titer=target_collection.begin() ; titer!=target_collection.end(); ++titer)
       {
-- G4ParticleDefinition * aDef=(*titer)->GetDefinition();
-+ const G4ParticleDefinition * aDef=(*titer)->GetDefinition();
-  G4int aCode=aDef->GetPDGEncoding();
-  G4ThreeVector aPos=(*titer)->GetPosition();
-  initial_Efermi+= RKprop->GetField(aCode, aPos);
+-	G4ParticleDefinition * aDef=(*titer)->GetDefinition();
++	const G4ParticleDefinition * aDef=(*titer)->GetDefinition();
+ 	G4int aCode=aDef->GetPDGEncoding();
+ 	G4ThreeVector aPos=(*titer)->GetPosition();
+ 	initial_Efermi+= RKprop->GetField(aCode, aPos);
 @@ -1477,7 +1477,7 @@ G4bool GateBinaryCascade::CheckPauliPrinciple(G4KineticTrackVector * products)
    const G4VNuclearDensity * density=the3DNucleus->GetNuclearDensity();
  
@@ -114,8 +110,8 @@ index 3301c02..dd413ed 100644
 -    G4ParticleDefinition * definition = kt->GetDefinition();
 +    const G4ParticleDefinition * definition = kt->GetDefinition();
      G4cout << "    definition: " << definition->GetPDGEncoding() << " pos: "
-     << 1/fermi*pos << " R: " << 1/fermi*pos.mag() << " 4mom: "
-     << 1/MeV*mom <<"Tr_mom" <<  1/MeV*tmom << " P: " << 1/MeV*mom.vect().mag() 
+ 	   << 1/fermi*pos << " R: " << 1/fermi*pos.mag() << " 4mom: "
+ 	   << 1/MeV*mom <<"Tr_mom" <<  1/MeV*tmom << " P: " << 1/MeV*mom.vect().mag() 
 @@ -2634,7 +2634,7 @@ G4bool GateBinaryCascade::CheckDecay(G4KineticTrackVector * products)
    const G4VNuclearDensity * density=the3DNucleus->GetNuclearDensity();
  
