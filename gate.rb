@@ -6,11 +6,11 @@ class Gate < Formula
   sha1 "c2933786d8e9cee97011c3ebe198fc6e1fb5fe1d"
 
   depends_on 'cmake' => :build
-  depends_on 'geant4'
+  depends_on 'ongchi/nuclear-physics/geant4' => "with-qt"
   depends_on 'root'
-
-  needs :cxx11
-  patch :DATA
+  depends_on 'qt'
+  
+  # patch :DATA
 
   def install
     mkdir 'gate-build' do
