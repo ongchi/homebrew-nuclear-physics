@@ -6,9 +6,6 @@ class Gate < Formula
   version "7.0"
 
   depends_on 'cmake' => :build
-  depends_on 'geant4' => ["with-gdml", "with-qt"]
-  depends_on 'root' => "with-gdml"
-  depends_on 'qt'
 
   needs :cxx11
 
