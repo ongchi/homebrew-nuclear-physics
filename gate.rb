@@ -10,7 +10,7 @@ class Gate < Formula
   depends_on 'root'
   depends_on 'qt'
   
-  # patch :DATA
+  patch :DATA
 
   def install
     mkdir 'gate-build' do
