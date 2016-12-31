@@ -1,8 +1,7 @@
 class F2c < Formula
-  homepage "https://github.com/juanjosegarciaripoll/f2c"
-  url "https://github.com/juanjosegarciaripoll/f2c/archive/master.zip"
-  sha1 "c21fcb9022e120d5f832bcef8f9e3badd20371e1"
-  version "20120201"
+  desc "Fortran to C Compiler from Netlib"
+  homepage "https://github.com/ongchi/f2c"
+  head "https://github.com/ongchi/f2c.git"
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
